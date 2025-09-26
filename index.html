@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>車体の形状</title>
+
+        <!-- Vuetify 3 CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/vue@3.4.38/dist/vue.global.prod.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vuetify@3.7.19/dist/vuetify.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/vuetify@3.7.19/dist/vuetify.min.css" rel="stylesheet" />
+
+        <!-- Material Design Icons -->
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet" />
+    </head>
+
+    <body>
+        <div id="app">
+            <v-app>
+                <v-app-bar>
+                    <v-app-bar-title>
+                        <div style="display: flex; align-items: center; width: 100%;">
+                            <h1 style="font-size: medium;">車体の形状</h1>
+                            <v-spacer></v-spacer>
+                            <v-select
+                                v-model="selectedCategory"
+                                :items="Array.from(new Set(items.map(i => i.区分)))"
+                                label="区分"
+                                multiple
+                                chips
+                                clearable
+                                class="mt-5">
+                            </v-select>
+                            <v-spacer></v-spacer>
+
+                            <!-- テーマ切替ボタン -->
+                            <v-btn
+                                @click="toggleTheme"
+                                icon>
+                                <v-icon>
+                                    {{ theme.global.current.value.dark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}
+                                </v-icon>
+                            </v-btn>
+                        </div>
+                    </v-app-bar-title>
+                </v-app-bar>
+                <v-main>
+                    <v-data-table
+                        :items="filteredItems"
+                        class="mb-4"
+                        dense
+                        hide-default-footer
+                        :items-per-page="-1"
+                        :loading="loading"
+                        :height="tableHeight + 'px'"
+                        multi-sort
+                        fixed-header
+                        hover>
+                    </v-data-table>
+                </v-main>
+            </v-app>
+        </div>
+
+        <script type="module" src="index.js"></script>
+    </body>
+
+</html>
