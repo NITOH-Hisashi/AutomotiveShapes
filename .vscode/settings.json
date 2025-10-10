@@ -1,4 +1,9 @@
 {
     "files.insertFinalNewline": true,
-    "files.trimFinalNewlines": false
+    "files.trimFinalNewlines": false,
+    "cSpell.words": [
+        "importmap",
+        "noopener",
+        "noreferrer"
+    ]
 }

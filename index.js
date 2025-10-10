@@ -15,50 +15,50 @@ const vuetify = createVuetify({
 createApp({
     setup() {
         const loading = ref(true)       // ローディング状態を管理
-        const items = ref([])
+        const items = ref([])           // アイテムリスト
         const selectedCategory = ref([])
+        const margin = 104              // マージン調整用の値
+        const tableHeight = ref(window.innerHeight - margin)
+        const theme = useTheme()        // テーマ切替用
 
         const filteredItems = computed(() => {
-            return items.value.filter(item => {
-                const matchCategory = !selectedCategory.value.length || selectedCategory.value.includes(item.区分)
-                return matchCategory
-            })
+            return items.value.filter(item =>
+                !selectedCategory.value.length || selectedCategory.value.includes(item.区分)
+            )
         })
 
-        // テーマ切替用
-        const theme = useTheme()
+        /**
+         * テーマ切替
+         */
         const toggleTheme = () => {
             theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
         }
 
-        const margin = 190  // マージン調整用の値
-        const tableHeight = ref(window.innerHeight - margin)
-        // ウィンドウサイズ監視用
+        /**
+         * ウィンドウサイズ監視用
+         */
         const resizeHandler = () => {
             tableHeight.value = window.innerHeight - margin
         }
 
-        // 初期化フラグ
-        let initializing = true
-
+        /**
+         * 初期化
+         */
         onMounted(async () => {
-            loading.value = true // ローディング開始
             // ウィンドウリサイズ時のイベントリスナーを登録
             window.addEventListener('resize', resizeHandler)
-            // CSVパース関数
             try {
-                const csvText = await fetch('./車体の形状 - コード.csv').then(r => r.text());
-                const result = parseCSV2(csvText);
-                console.info(result);
-                items.value = result.items;
+                const csvText = await fetch('./車体の形状 - コード.csv').then(r => r.text())
+                // CSVパース関数
+                const result = parseCSV2(csvText)
+                items.value = result.items
             } catch (error) {
-                console.error('Error fetching CSV files:', error);
+                console.error('CSV読み込みエラー:', error)
             }
-            loading.value = false // ローディング終了
-            initializing = false
-        });
+            loading.value = false       // ローディング終了
+        })
+
         onBeforeUnmount(() => {
-            // コンポーネントがアンマウントされる際にイベントリスナーを削除
             window.removeEventListener('resize', resizeHandler)
         })
 
@@ -72,4 +72,44 @@ createApp({
             theme,
         }
     },
+    template: `
+    <v-app>
+      <v-app-bar>
+        <v-app-bar-title>
+          <div style="display: flex; align-items: center; width: 100%;">
+            <h1 style="font-size: medium;">車体の形状</h1>
+            <v-spacer></v-spacer>
+            <v-select
+              v-model="selectedCategory"
+              :items="Array.from(new Set(items.map(i => i.区分)))"
+              label="区分"
+              multiple
+              chips
+              clearable
+              class="mt-5"
+            ></v-select>
+            <v-spacer></v-spacer>
+            <v-btn @click="toggleTheme" icon>
+              <v-icon>{{ theme.global.current.value.dark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
+            </v-btn>
+          </div>
+        </v-app-bar-title>
+      </v-app-bar>
+      <v-main>
+        <v-data-table
+          :items="filteredItems"
+          :loading="loading"
+          :height="tableHeight + 'px'"
+          dense
+          hide-default-footer
+          :items-per-page="-1"
+          multi-sort
+          fixed-header
+          hover
+          class="mb-4"
+        ></v-data-table>
+      </v-main>
+      <a href="https://github.com/NITOH-Hisashi/AutomotiveShapes" target="_blank" rel="noopener noreferrer">自動車の用途等の区分について（依命通達）</a>
+    </v-app>
+  `
 }).use(vuetify).mount('#app')
