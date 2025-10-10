@@ -16,52 +16,7 @@
     </head>
 
     <body>
-        <div id="app">
-            <v-app>
-                <v-app-bar>
-                    <v-app-bar-title>
-                        <div style="display: flex; align-items: center; width: 100%;">
-                            <h1 style="font-size: medium;">車体の形状</h1>
-                            <v-spacer></v-spacer>
-                            <v-select
-                                v-model="selectedCategory"
-                                :items="Array.from(new Set(items.map(i => i.区分)))"
-                                label="区分"
-                                multiple
-                                chips
-                                clearable
-                                class="mt-5">
-                            </v-select>
-                            <v-spacer></v-spacer>
-
-                            <!-- テーマ切替ボタン -->
-                            <v-btn
-                                @click="toggleTheme"
-                                icon>
-                                <v-icon>
-                                    {{ theme.global.current.value.dark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}
-                                </v-icon>
-                            </v-btn>
-                        </div>
-                    </v-app-bar-title>
-                </v-app-bar>
-                <v-main>
-                    <v-data-table
-                        :items="filteredItems"
-                        class="mb-4"
-                        dense
-                        hide-default-footer
-                        :items-per-page="-1"
-                        :loading="loading"
-                        :height="tableHeight + 'px'"
-                        multi-sort
-                        fixed-header
-                        hover>
-                    </v-data-table>
-                </v-main>
-            </v-app>
-        </div>
-
+        <div id="app"></div>
         <script type="module" src="index.js"></script>
     </body>
 
